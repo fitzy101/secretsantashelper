@@ -35,6 +35,22 @@ The list of people is configured via a json file, which is an array of objects c
 ]
 ```
 
+Below is an example run of the program.
+
+```
+$ python3 secret_santa.py --config-file example_config.json --dry-run
+
+HoHoHo jessica bloggs, you have received your Secret Santa giftee!
+You will be finding a gift for jeoffrey bloggs with a limit of $50. Christmas is
+right around the corner, so get creative!
+
+
+HoHoHo jeoffrey bloggs, you have received your Secret Santa giftee!
+You will be finding a gift for jessica bloggs with a limit of $50. Christmas is
+right around the corner, so get creative!
+```
+
 Currently, only twilio can be used for the SMS service, however it is easy to write an adapter to work with any SMS API. Pull requests for new services welcome!
+
 
 

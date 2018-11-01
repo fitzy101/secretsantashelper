@@ -8,14 +8,23 @@ import random
 from twilio.rest import Client
 
 def usage():
-    print (textwrap.dedent(("""
-    {} --config-file=<path-to-json-file> [--dry-run --dollar-limit=<limit(integer)> --message-service=<service> --twilio-sid=<sid> --twilio-api-key=<api_key> --from-num=<number>]
+    print (textwrap.dedent(("""{} --config-file=<path-to-json-file> [--dry-run --dollar-limit=<limit(integer)> --message-service=<service> --twilio-sid=<sid> --twilio-api-key=<api_key> --from-num=<number>]
+
+    --config-file       file path to the configuration file (required)
+    --dry-run           print out the messages, and don't send anything
+    --dollar-limit      change the dollar limit from the default of $50
+    --message-service   the SMS message API to use; currently only supports twilio
+    --from-num          the 'from' number for the message service
+
+    Twilio Specific
+    --twilio-sid        the twilio SID account number
+    --twilio-api-key    your API key
     """.format(sys.argv[0]))))
 
 def main():
 
     # parse all args
-    arg_list = "dry-run dollar-limit= config-file= twilio-sid= twilio-api-key= message-service= from-num="
+    arg_list = "dry-run dollar-limit= config-file= twilio-sid= twilio-api-key= message-service= from-num= help"
     try:
         opts, args = getopt.getopt(sys.argv[1:], "", arg_list.split())
     except getopt.GetoptError as err:
@@ -30,6 +39,9 @@ def main():
     twilio_api_key = None
     msg_service = None
     from_num = None
+    if len(sys.argv) == 1:
+        usage()
+        sys.exit(2)
 
     for o, a in opts:
         if o == "--dry-run":
@@ -46,8 +58,11 @@ def main():
             twilio_api_key = a
         elif o == "--from-num":
             from_num = a
+        elif o == "--help":
+            usage()
+            sys.exit(1)
         else:
-            assert False, "invalid argument provided"
+            usage()
             sys.exit(2)
 
     # validate args

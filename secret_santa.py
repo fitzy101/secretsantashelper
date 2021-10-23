@@ -85,7 +85,7 @@ def main():
         print("twilio requires sid and api_key", file=sys.stderr)
         usage()
         sys.exit(2)
-    
+
     receivers = []
     with open(config_file, "r") as f:
         try:
@@ -153,7 +153,7 @@ class Receiver:
         self._id = hashlib.sha1(str.encode("{}{}".format(
             self.full_name, self.ph_number))).hexdigest()
         return
-    
+
     @property
     def full_name(self):
         return self._full_name
@@ -183,7 +183,7 @@ class Receiver:
     @property
     def id(self):
         return self._id
-    
+
 if __name__ == "__main__":
     main()
 

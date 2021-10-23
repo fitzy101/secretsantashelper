@@ -125,8 +125,8 @@ def find_random_giftee(from_p, receivers):
 
 def message(from_p, to_p, limit):
     return textwrap.dedent("""
-        HoHoHo {}, you have received your Secret Santa giftee!
-        You will be finding a gift for {} with a limit of ${}. Christmas is
+        Ho Ho Ho! {}, you have received your Secret Santa giftee!
+        You will be giving a gift to {} with a limit of ${}. Christmas is
         right around the corner, so get creative!
         """).format(from_p.full_name, to_p.full_name, limit)
 

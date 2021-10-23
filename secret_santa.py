@@ -14,7 +14,7 @@ def usage():
     --dry-run           print out the messages, and don't send anything
     --dollar-limit      change the dollar limit from the default of $50
     --message-service   the SMS message API to use; currently only supports twilio
-    --from-num          the 'from' number for the message service
+    --from-num          the messaging service SID
 
     Twilio Specific
     --twilio-sid        the twilio SID account number
@@ -38,7 +38,7 @@ def main():
     twilio_sid = None
     twilio_api_key = None
     msg_service = None
-    from_num = None
+    service_sid = None
     if len(sys.argv) == 1:
         usage()
         sys.exit(2)
@@ -57,7 +57,7 @@ def main():
         elif o == "--twilio-api-key":
             twilio_api_key = a
         elif o == "--from-num":
-            from_num = a
+            service_sid = a
         elif o == "--help":
             usage()
             sys.exit(1)
@@ -76,8 +76,8 @@ def main():
         usage()
         sys.exit(2)
 
-    if from_num is None and not dry_run:
-        print("no 'from' number provided and not a dry run", file=sys.stderr)
+    if service_sid is None and not dry_run:
+        print("no messaging service sid number provided and not a dry run", file=sys.stderr)
         usage()
         sys.exit(2)
 
@@ -97,17 +97,21 @@ def main():
                     Receiver(p['full_name'], p['ph_number']))
 
     # determine send/receive list
+    print("matching senders and receivers")
     for receiver in receivers:
         receiver.person_given = find_random_giftee(receiver, receivers)
 
+
     # send the messages/print to out
+    print("sending messages")
     for receiver in receivers:
         msg = message(receiver, receiver.person_given, dollar_limit)
         if dry_run:
             print (msg)
         else:
             if msg_service == "twilio":
-                send_twilio_message(receiver, msg, twilio_sid, twilio_api_key, from_num)
+                print(f"sending message to {receiver.full_name}")
+                send_twilio_message(receiver, msg, twilio_sid, twilio_api_key, service_sid)
             else:
                 print("message service not supported!", file=sys.stderr)
                 sys.exit(1)
@@ -130,11 +134,11 @@ def message(from_p, to_p, limit):
         right around the corner, so get creative!
         """).format(from_p.full_name, to_p.full_name, limit)
 
-def send_twilio_message(from_p, msg, sid, api_key, from_num):
+def send_twilio_message(from_p, msg, sid, api_key, service_sid):
     """ send with twilio api """
     client = Client(sid, api_key)
     message = client.messages.create(
-        from_=from_num,
+        messaging_service_sid=service_sid,
         body=msg,
         to=from_p.ph_number
     )
